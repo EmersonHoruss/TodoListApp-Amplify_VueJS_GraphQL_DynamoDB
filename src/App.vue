@@ -220,15 +220,25 @@ svg {
 
       <table>
         <tr>
-          <th>Select</th>
+          <th>#</th>
           <th>Name</th>
           <th>Description</th>
+          <th>Done</th>
           <th>Options</th>
         </tr>
-        <tr v-for="todo in todos" :key="todo.id">
-          <td><input type="checkbox" /></td>
+        <tr v-if="isLoading">
+          <td colspan="5">Retrieving data</td>
+        </tr>
+
+        <tr v-if="!todos.length && !isLoading">
+          <td colspan="5">No data</td>
+        </tr>
+
+        <tr v-for="(todo, index) in todos" :key="todo.id">
+          <td>{{ index + 1 }}</td>
           <td>{{ todo.name }}</td>
           <td>{{ todo.description }}</td>
+          <td><input type="checkbox" /></td>
           <td class="options">
             <div
               class="option"
@@ -441,6 +451,7 @@ export default {
       nameCreate: "",
       descriptionCreate: "",
       todos: [],
+      isLoading: true,
     };
   },
   methods: {
@@ -451,6 +462,7 @@ export default {
     },
 
     async updateTodo() {
+      if (!this.name) return;
       const todo = {
         id: this.id,
         name: this.name,
@@ -475,22 +487,25 @@ export default {
     },
 
     async createTodo() {
-      const { nameCreate, descriptionCreate } = this;
-      if (!nameCreate || !descriptionCreate) return;
-      const todo = { name: nameCreate, description: descriptionCreate };
+      if (!this.nameCreate) return;
+      const todo = {
+        name: this.nameCreate,
+        description: this.descriptionCreate,
+      };
       this.todos = [...this.todos, todo];
       await API.graphql({
         query: createTodo,
         variables: { input: todo },
       });
       this.nameCreate = "";
-      this.descriptionDescription = "";
+      this.descriptionCreate = "";
     },
 
     async getTodos() {
       const todos = await API.graphql({
         query: listTodos,
       });
+      this.isLoading = false;
       this.todos = todos.data.listTodos.items;
     },
   },
