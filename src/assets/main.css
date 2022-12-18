@@ -1,5 +1,13 @@
-@import './base.css';
-
+@import "./base.css";
+:root {
+  --primary-color: rgb(71, 88, 184);
+  --primary-hover-color: rgb(242, 243, 247);
+  --primary-active-color: rgb(211, 215, 235);
+  --gray-color: #999;
+  --border-color: rgba(153, 153, 153, 0.419);
+  --dangerous-color: red;
+}
+/* 
 #app {
   max-width: 1280px;
   margin: 0 auto;
@@ -32,4 +40,4 @@ a,
     grid-template-columns: 1fr 1fr;
     padding: 0 2rem;
   }
-}
+} */
