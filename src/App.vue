@@ -633,10 +633,12 @@ export default {
     },
 
     async toggleStatus(todo) {
-      this.done = !todo.done;
-      this.id = todo.id;
-      this.name = todo.name;
-      await this.updateTodo();
+      todo.done = !todo.done;
+      await API.graphql({
+        query: updateTodo,
+        variables: { input: { id: todo.id, done: todo.done } },
+      });
+      this.getTodos();
     },
 
     async deleteTodo() {
