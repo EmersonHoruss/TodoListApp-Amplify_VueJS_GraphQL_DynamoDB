@@ -317,7 +317,13 @@ svg {
             <td>{{ index + 1 }}</td>
             <td>{{ todo.name }}</td>
             <td>{{ todo.description }}</td>
-            <td><input type="checkbox" /></td>
+            <td>
+              <input
+                type="checkbox"
+                v-model="todo.done"
+                v-on:click="toggleStatus(todo)"
+              />
+            </td>
             <td class="options">
               <div
                 class="option"
@@ -422,7 +428,7 @@ svg {
                 <label for="name">Name:</label>
                 <input
                   type="text"
-                  v-model="name"
+                  v-model="nameCreate"
                   placeholder="Program a list todo app."
                   name="name"
                   class="my-input"
@@ -432,7 +438,7 @@ svg {
               <div class="description">
                 <label for="description">Description:</label>
                 <textarea
-                  v-model="description"
+                  v-model="descriptionCreate"
                   placeholder="App should be implemented using Amplify, VueJS, GraphQL and DynamoDB."
                   name="description"
                   rows="3"
@@ -446,7 +452,7 @@ svg {
           <div class="modal-footer">
             <button
               type="button"
-              v-on:click="updateTodo"
+              v-on:click="createTodo"
               data-bs-dismiss="modal"
             >
               Save
@@ -597,6 +603,7 @@ export default {
       id: "",
       name: "",
       description: "",
+      done: false,
       nameCreate: "",
       descriptionCreate: "",
       todos: [],
@@ -616,12 +623,20 @@ export default {
         id: this.id,
         name: this.name,
         description: this.description,
+        done: this.done,
       };
       await API.graphql({
         query: updateTodo,
         variables: { input: todo },
       });
       this.getTodos();
+    },
+
+    async toggleStatus(todo) {
+      this.done = !todo.done;
+      this.id = todo.id;
+      this.name = todo.name;
+      await this.updateTodo();
     },
 
     async deleteTodo() {
@@ -640,6 +655,7 @@ export default {
       const todo = {
         name: this.nameCreate,
         description: this.descriptionCreate,
+        done: true,
       };
       this.todos = [...this.todos, todo];
       await API.graphql({
@@ -654,6 +670,7 @@ export default {
       const todos = await API.graphql({
         query: listTodos,
       });
+      console.log(todos.data.listTodos.items);
       this.isLoading = false;
       this.todos = todos.data.listTodos.items;
     },
