@@ -655,7 +655,7 @@ export default {
       const todo = {
         name: this.nameCreate,
         description: this.descriptionCreate,
-        done: true,
+        done: false,
       };
       this.todos = [...this.todos, todo];
       await API.graphql({
