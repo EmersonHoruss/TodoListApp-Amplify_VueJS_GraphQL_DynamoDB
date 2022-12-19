@@ -519,7 +519,7 @@ svg {
           <div class="modal-footer">
             <button
               type="button"
-              v-on:click="updateTodo"
+              v-on:click="updateTodo()"
               data-bs-dismiss="modal"
             >
               Save
@@ -612,6 +612,7 @@ export default {
   },
   methods: {
     openModal: function (todo) {
+      console.log(todo);
       this.name = todo.name;
       this.description = todo.description;
       this.id = todo.id;
@@ -623,7 +624,6 @@ export default {
         id: this.id,
         name: this.name,
         description: this.description,
-        done: this.done,
       };
       await API.graphql({
         query: updateTodo,
