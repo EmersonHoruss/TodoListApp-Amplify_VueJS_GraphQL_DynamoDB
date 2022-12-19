@@ -619,7 +619,12 @@ export default {
     },
 
     async updateTodo() {
-      if (!this.name) return;
+      this.isLoading = true;
+      this.todos=[]
+      if (!this.name) {
+        this.isLoading = false;
+        return;
+      }
       const todo = {
         id: this.id,
         name: this.name,
@@ -629,19 +634,25 @@ export default {
         query: updateTodo,
         variables: { input: todo },
       });
+      this.isLoading = false;
       this.getTodos();
     },
 
     async toggleStatus(todo) {
       todo.done = !todo.done;
+      this.isLoading = true;
+      this.todos=[]
       await API.graphql({
         query: updateTodo,
         variables: { input: { id: todo.id, done: todo.done } },
       });
+      this.isLoading = false;
       this.getTodos();
     },
 
     async deleteTodo() {
+      this.isLoading = true;
+      this.todos=[]
       const todo = {
         id: this.id,
       };
@@ -649,11 +660,17 @@ export default {
         query: deleteTodo,
         variables: { input: todo },
       });
+      this.isLoading = false;
       this.getTodos();
     },
 
     async createTodo() {
-      if (!this.nameCreate) return;
+      this.isLoading = true;
+      this.todos=[]
+      if (!this.nameCreate) {
+        this.isLoading = false;
+        return;
+      }
       const todo = {
         name: this.nameCreate,
         description: this.descriptionCreate,
@@ -664,11 +681,14 @@ export default {
         query: createTodo,
         variables: { input: todo },
       });
+      this.isLoading = false;
       this.nameCreate = "";
       this.descriptionCreate = "";
     },
 
     async getTodos() {
+      this.isLoading = true;
+      this.todos=[]
       const todos = await API.graphql({
         query: listTodos,
       });
